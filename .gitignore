@@ -1,0 +1,42 @@
+# Ignorar el entorno virtual
+venv/
+
+# Archivos compilados de Python
+__pycache__/
+*.py[cod]
+
+# Archivos de logs
+*.log
+
+# Archivos de configuración o variables de entorno
+.env
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Archivos de caché y metadatos
+*.sqlite3
+*.db
+*.pot
+*.pyc
+*.pyo
+
+# VSCode config (si usas VSCode)
+.vscode/
+
+# Archivos de test y cobertura (opcional)
+htmlcov/
+.coverage
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Archivos temporales
+*.swp
+*.swo

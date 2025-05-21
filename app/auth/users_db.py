@@ -14,5 +14,16 @@ fake_users_db = {
         "username": "stripe_sa",
         "password": "dzkQqDL9XZH33YDzhmsf",
         "role": "service_account"
+    },
+    "marcela_soto": {
+    "username": "marcela_soto",
+    "password": "123456",
+    "role": "jefe_tienda"
+    },
+    "sebastian_sandoval": {
+    "username": "sebastian_sandoval",
+    "password": "bodega123",
+    "role": "bodega"
     }
+
 }

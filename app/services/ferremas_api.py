@@ -23,6 +23,22 @@ def get_articulo_id(articulo_id: str):
         raise ValueError("Artículo no encontrado o respuesta vacía")
 
     return data
+#PUT ARTICULO
+def actualizar_stock_articulo(articulo_id: str, nuevo_stock: int):
+    url = f"{BASE_URL}/data/articulos/{articulo_id}"
+    headers_with_auth = {
+        "x-authentication": TOKEN,
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "cantidad": nuevo_stock  
+    }
+
+    response = requests.put(url, headers=headers_with_auth, json=payload)
+    response.raise_for_status()
+    return response.json()
+
 #GET SUCURSALES
 def get_sucursales():
     url = f"{BASE_URL}/data/sucursales"
@@ -60,8 +76,6 @@ def get_vendedor_id(vendedor_id: str):
 
     return data
 #CREAR PEDIDO
-## ESTA BUGEADA LA CREACIÓN DE PEDIDOS PARECE, ME DA ERROR 500
-## AUNQUE LOS DATOS ESTEN BIEN 
 def crear_pedido(pedido: PedidoRequest):
     url = f"{BASE_URL}/data/pedidos/nuevo"
     headers_with_auth = {

@@ -1,13 +1,9 @@
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from app.models.login import LoginRequest
 from app.auth.users_db import fake_users_db
 from app.auth.auth_handler import create_access_token
 
 router = APIRouter(prefix="/auth", tags=["Autenticación"])
-
-class LoginRequest(BaseModel):
-    username: str
-    password: str
 
 @router.post("/login")
 def login(request: LoginRequest):

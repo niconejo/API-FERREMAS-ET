@@ -6,7 +6,7 @@ load_dotenv()
 
 stripe.api_key = os.getenv("STRIPE_API_KEY") 
 
-def crear_sesion_pago(cantidad: int, descripcion: str, email_cliente: str):
+def crear_sesion_pago(precio: int, descripcion: str, email_cliente: str):
     try:
         session = stripe.checkout.Session.create(
             payment_method_types=["card"],
@@ -16,7 +16,7 @@ def crear_sesion_pago(cantidad: int, descripcion: str, email_cliente: str):
                     "product_data": {
                         "name": descripcion
                     },
-                    "unit_amount": cantidad * 100  
+                    "unit_amount": precio   
                 },
                 "quantity": 1
             }],

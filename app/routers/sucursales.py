@@ -5,12 +5,12 @@ from app.auth.role_checker import validar_rol
 from app.auth.roles import ROLES
 
 router = APIRouter(prefix="/data/sucursales", tags=["Sucursales"])
-
+#lista sucursales
 @router.get("/", dependencies=[Depends(JWTBearer())])
 def listar_sucursales(payload=Depends(JWTBearer())):
     validar_rol(payload, [ROLES["client"]])
     return get_sucursales()
-
+#identifica sucursal por id
 @router.get("/{sucursal_id}", dependencies=[Depends(JWTBearer())])
 def obtener_sucursal(sucursal_id: str = Path(..., description="ID de la sucursal"), payload=Depends(JWTBearer())):
     validar_rol(payload, [ROLES["client"]])

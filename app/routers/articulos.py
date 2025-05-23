@@ -10,7 +10,7 @@ import requests
 from sqlalchemy import or_
 
 router = APIRouter(prefix="/data/articulos", tags=["Articulos"])
-
+#sincroniza catalogo local
 def sincronizar_articulos():
     respuesta = requests.get("https://api-ferremas.com/data/articulos")
     if respuesta.status_code == 200:
@@ -21,12 +21,12 @@ def sincronizar_articulos():
                     articulo = Articulo(**art)
                     session.add(articulo)
             session.commit()
-
+#lista articulos
 @router.get("/", dependencies=[Depends(JWTBearer())])
 def listar_articulos(payload=Depends(JWTBearer())):
     validar_rol(payload, [ROLES["bodega"], ROLES["admin"], ROLES["jefe_tienda"]])
     return get_articulos()
-
+#lista novedades
 @router.get("/novedades", response_model=list[Articulo], dependencies=[Depends(JWTBearer())])
 def obtener_novedades(payload=Depends(JWTBearer())):
     try:
@@ -37,21 +37,16 @@ def obtener_novedades(payload=Depends(JWTBearer())):
             if ids and isinstance(ids[0], tuple):
                 ids = [id[0] for id in ids]
             print(f"IDs encontrados (limpios): {ids}")
-
-            # Verificamos si los artículos existen en DB con consulta directa
             for id_test in ids:
                 art_test = session.get(Articulo, id_test)
                 print(f"Artículo con id {id_test}: {art_test}")
-
-            # Intentamos con in_()
             articulos = session.exec(select(Articulo).where(Articulo.id.in_(ids))).all()
             print(f"Artículos encontrados con in_(): {articulos}")
-
             return articulos
     except Exception as e:
         print(f"ERROR en /novedades: {e}")
         raise HTTPException(status_code=500, detail="Error al obtener novedades: " + str(e))
-            
+#lista promociones        
 @router.get("/promociones", response_model=list[Articulo], dependencies=[Depends(JWTBearer())])
 def obtener_promociones(payload=Depends(JWTBearer())):
     try:
@@ -76,7 +71,7 @@ def obtener_promociones(payload=Depends(JWTBearer())):
     except Exception as e:
         print(f"ERROR en /promociones: {e}")
         raise HTTPException(status_code=500, detail="Error al obtener promociones: " + str(e))
-
+#agrega articulo
 @router.post("/nuevo", response_model=Articulo, dependencies=[Depends(JWTBearer())])
 def agregar_articulo(articulo: Articulo, payload=Depends(JWTBearer())):
     validar_rol(payload, [ROLES["mantenedor"]])
@@ -85,7 +80,7 @@ def agregar_articulo(articulo: Articulo, payload=Depends(JWTBearer())):
         session.commit()
         session.refresh(articulo)
         return articulo
-
+#agrega articulo a novedades
 @router.post("/novedades/{articulo_id}", dependencies=[Depends(JWTBearer())])
 def agregar_a_novedades(articulo_id: str, payload=Depends(JWTBearer())):
     validar_rol(payload, [ROLES["mantenedor"],
@@ -94,7 +89,7 @@ def agregar_a_novedades(articulo_id: str, payload=Depends(JWTBearer())):
         session.add(Novedad(articulo_id=articulo_id))
         session.commit()
     return {"mensaje": f"Articulo {articulo_id} marcado como novedad"}
-
+#agrega articulo a promociones
 @router.post("/promociones/{articulo_id}", dependencies=[Depends(JWTBearer())])
 def agregar_a_promociones(articulo_id: str, payload=Depends(JWTBearer())):
     validar_rol(payload, [ROLES["mantenedor"], ROLES["admin"]])
@@ -102,7 +97,7 @@ def agregar_a_promociones(articulo_id: str, payload=Depends(JWTBearer())):
         session.add(Promocion(articulo_id=articulo_id))
         session.commit()
     return {"mensaje": f"Articulo {articulo_id} marcado como promoción"}
-
+#obtener articulo por id
 @router.get("/{articulo_id}", dependencies=[Depends(JWTBearer())])
 def obtener_articulo(
     articulo_id: str = Path(..., description="ID del artículo"),

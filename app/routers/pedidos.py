@@ -10,7 +10,7 @@ router = APIRouter(
     prefix="/pedidos",
     tags=["Pedidos"]
 )
- 
+#pedido con un solo producto
 @router.post("/nuevo", dependencies=[Depends(JWTBearer())])
 def registrar_pedido(pedido: PedidoRequest, payload=Depends(JWTBearer())):
     validar_rol(payload, [ROLES["client"]])
@@ -55,7 +55,7 @@ def registrar_pedido(pedido: PedidoRequest, payload=Depends(JWTBearer())):
             "resultado": resultado_local,
             "error": str(e)
         }
-
+# pedido con mas de un producto
 @router.post("/nuevo-multiple", dependencies=[Depends(JWTBearer())])
 def registrar_pedido_multiple(pedido: PedidoMultipleRequest, payload=Depends(JWTBearer())):
     validar_rol(payload, [ROLES["client"]])

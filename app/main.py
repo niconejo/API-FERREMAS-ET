@@ -18,3 +18,7 @@ app.include_router(pedidos.router)
 app.include_router(contacto.router)
 app.include_router(pagos.router)
 app.include_router(divisas.router)
+
+@app.get("/")
+async def root():
+    return {"message": "Bienvenido a la API de FERREMAS. Visita /docs para la documentación interactiva."}

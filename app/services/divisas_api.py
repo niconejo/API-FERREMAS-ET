@@ -1,6 +1,11 @@
 import requests
+import os
+from dotenv import load_dotenv
 
-API_KEY = "1jVx7wgcqBzQ9VL5Yv2Js5v2TdIL4Lhb"  # Reemplázala con tu clave real
+load_dotenv()
+
+API_KEY = os.getenv("API_KEY") 
+
 
 def convertir_divisa(from_currency: str, to_currency: str, amount: float):
     url = "https://api.apilayer.com/fixer/convert"

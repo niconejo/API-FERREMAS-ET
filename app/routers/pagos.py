@@ -12,7 +12,6 @@ router = APIRouter(
 
 @router.post("/checkout", dependencies=[Depends(JWTBearer())])
 def iniciar_pago(pago: PagoRequest, payload=Depends(JWTBearer())):
-    #Solo el rol "client" puede acceder a este endpoint
     validar_rol(payload, [ROLES["client"]])
 
     try:

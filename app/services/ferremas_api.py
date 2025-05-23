@@ -16,26 +16,33 @@ def get_articulos():
 
 def get_articulo_id(articulo_id: str):
     url = f"{BASE_URL}/data/articulos/{articulo_id}"
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()
-    data = response.json()
-    if not data:  # si devuelve {}
-        raise ValueError("Artículo no encontrado o respuesta vacía")
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        data = response.json()
+
+        if not data or not isinstance(data, dict):
+            raise ValueError("Artículo no encontrado o respuesta vacía")
+
+        return data
+
+    except requests.HTTPError as e:
+        raise ValueError(f"Error al obtener el artículo: {e}")
 
     return data
 #PUT ARTICULO
 def actualizar_stock_articulo(articulo_id: str, nuevo_stock: int):
-    url = f"{BASE_URL}/data/articulos/{articulo_id}"
+    url = f"{BASE_URL}/data/articulos/venta/{articulo_id}"
     headers_with_auth = {
-        "x-authentication": TOKEN,
-        "Content-Type": "application/json"
+        "x-authentication": TOKEN
     }
 
-    payload = {
+    params = {
         "cantidad": nuevo_stock  
     }
+    print(f"PUT {url}?cantidad={nuevo_stock}")
 
-    response = requests.put(url, headers=headers_with_auth, json=payload)
+    response = requests.put(url, headers=headers_with_auth, params=params)
     response.raise_for_status()
     return response.json()
 

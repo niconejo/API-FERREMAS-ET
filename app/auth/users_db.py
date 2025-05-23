@@ -24,6 +24,11 @@ fake_users_db = {
     "username": "sebastian_sandoval",
     "password": "bodega123",
     "role": "bodega"
+    },
+    "lukas_toledo": {
+    "username": "lukas_toledo",
+    "password": "mantenedor123",
+    "role": "mantenedor"
     }
 
 }

@@ -1,6 +1,7 @@
 #app/main.py
 from fastapi import FastAPI
 from app.routers import articulos, auth, sucursales, vendedores, pedidos, contacto, pagos, divisas
+from app.services.database import crear_bd
 
 
 app = FastAPI(
@@ -8,7 +9,7 @@ app = FastAPI(
     description="API puente entre Ferremas y servicios externos",
     version="1.0"
 )
-
+crear_bd()
 app.include_router(auth.router)
 app.include_router(articulos.router)
 app.include_router(sucursales.router)

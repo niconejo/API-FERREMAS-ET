@@ -1,9 +1,19 @@
-from sqlmodel import SQLModel, create_engine
+from sqlmodel import create_engine
+import os
+from dotenv import load_dotenv
 
-sqlite_file_name = "catalogo.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
+load_dotenv()
 
-engine = create_engine("sqlite:///ferremas.db")
+MYSQL_USER = os.getenv("MYSQL_USER")
+MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD")
+MYSQL_HOST = os.getenv("MYSQL_HOST")
+MYSQL_PORT = os.getenv("MYSQL_PORT")
+MYSQL_DB = os.getenv("MYSQL_DB")
 
-def crear_bd():
-    SQLModel.metadata.create_all(engine)
+# Formato de la URL: dialect+driver://username:password@host:port/database
+DATABASE_URL = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DB}"
+
+engine = create_engine(DATABASE_URL, echo=True)
+
+def get_db_engine():
+    return engine

@@ -13,7 +13,8 @@ def listar_sucursales(payload=Depends(JWTBearer())):
 #identifica sucursal por id
 @router.get("/{sucursal_id}", dependencies=[Depends(JWTBearer())])
 def obtener_sucursal(sucursal_id: str = Path(..., description="ID de la sucursal"), payload=Depends(JWTBearer())):
-    validar_rol(payload, [ROLES["client"]])
+    validar_rol(payload, [ROLES["client"],
+                          ROLES["admin"]])
     try:
         return get_sucursal_id(sucursal_id)
     except ValueError:

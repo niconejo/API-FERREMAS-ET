@@ -1,5 +1,8 @@
 import requests
 from app.models.pedido import PedidoRequest
+from app.services.database import get_db_engine;
+from sqlmodel import Session, select
+from app.models.articulo import Articulo
 
 BASE_URL = "https://ea2p2assets-production.up.railway.app"
 TOKEN = "SaGrP9ojGS39hU9ljqbXxQ=="
@@ -9,10 +12,43 @@ headers = {
 }
 #GET ARTICULOS
 def get_articulos():
+    # 1. Obtener desde API externa
     url = f"{BASE_URL}/data/articulos"
     response = requests.get(url, headers=headers)
     response.raise_for_status()
-    return response.json()
+    articulos_externos = response.json()
+
+    # 2. Guardar en la base de datos local
+    with Session(get_db_engine()) as session:
+        for art in articulos_externos:
+            articulo_existente = session.exec(
+                select(Articulo).where(Articulo.id == art["id"])
+            ).first()
+
+            if articulo_existente:
+                # actualizar si ya existe
+                articulo_existente.categoria = art.get("categoria", "")
+                articulo_existente.subcategoria = art.get("subcategoria", "")
+                articulo_existente.nombre = art.get("nombre", "")
+                articulo_existente.marca = art.get("marca", "")
+                articulo_existente.precio = art.get("precio", 0)
+                articulo_existente.stock = art.get("stock", 0)
+            else:
+                # crear nuevo
+                nuevo = Articulo(
+                    id=art.get("id"),
+                    categoria=art.get("categoria", ""),
+                    subcategoria=art.get("subcategoria", ""),
+                    nombre=art.get("nombre", ""),
+                    marca=art.get("marca", ""),
+                    precio=art.get("precio", 0),
+                    stock=art.get("stock", 0)
+                )
+                session.add(nuevo)
+
+        session.commit()
+
+    return articulos_externos
 
 def get_articulo_id(articulo_id: str):
     url = f"{BASE_URL}/data/articulos/{articulo_id}"
